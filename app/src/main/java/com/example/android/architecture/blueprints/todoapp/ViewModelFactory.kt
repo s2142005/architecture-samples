@@ -15,17 +15,13 @@
  */
 package com.example.android.architecture.blueprints.todoapp
 
+import android.os.Bundle
+import androidx.lifecycle.AbstractSavedStateViewModelFactory
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.savedstate.SavedStateRegistryOwner
 import com.example.android.architecture.blueprints.todoapp.addedittask.AddEditTaskViewModel
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository
-import com.example.android.architecture.blueprints.todoapp.domain.ActivateTaskUseCase
-import com.example.android.architecture.blueprints.todoapp.domain.ClearCompletedTasksUseCase
-import com.example.android.architecture.blueprints.todoapp.domain.CompleteTaskUseCase
-import com.example.android.architecture.blueprints.todoapp.domain.DeleteTaskUseCase
-import com.example.android.architecture.blueprints.todoapp.domain.GetTaskUseCase
-import com.example.android.architecture.blueprints.todoapp.domain.GetTasksUseCase
-import com.example.android.architecture.blueprints.todoapp.domain.SaveTaskUseCase
 import com.example.android.architecture.blueprints.todoapp.statistics.StatisticsViewModel
 import com.example.android.architecture.blueprints.todoapp.taskdetail.TaskDetailViewModel
 import com.example.android.architecture.blueprints.todoapp.tasks.TasksViewModel
@@ -35,36 +31,27 @@ import com.example.android.architecture.blueprints.todoapp.tasks.TasksViewModel
  */
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory constructor(
-    private val tasksRepository: TasksRepository
-) : ViewModelProvider.NewInstanceFactory() {
-    override fun <T : ViewModel> create(modelClass: Class<T>) =
-            with(modelClass) {
-                when {
-                    isAssignableFrom(StatisticsViewModel::class.java) ->
-                        StatisticsViewModel(
-                            GetTasksUseCase(tasksRepository)
-                        )
-                    isAssignableFrom(TaskDetailViewModel::class.java) ->
-                        TaskDetailViewModel(
-                            GetTaskUseCase(tasksRepository),
-                            DeleteTaskUseCase(tasksRepository),
-                            CompleteTaskUseCase(tasksRepository),
-                            ActivateTaskUseCase(tasksRepository)
-                        )
-                    isAssignableFrom(AddEditTaskViewModel::class.java) ->
-                        AddEditTaskViewModel(
-                            GetTaskUseCase(tasksRepository),
-                            SaveTaskUseCase(tasksRepository)
-                        )
-                    isAssignableFrom(TasksViewModel::class.java) ->
-                        TasksViewModel(
-                            GetTasksUseCase(tasksRepository),
-                            ClearCompletedTasksUseCase(tasksRepository),
-                            CompleteTaskUseCase(tasksRepository),
-                            ActivateTaskUseCase(tasksRepository)
-                        )
-                    else ->
-                        throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
-                }
-            } as T
+    private val tasksRepository: TasksRepository,
+    owner: SavedStateRegistryOwner,
+    defaultArgs: Bundle? = null
+) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
+
+    override fun <T : ViewModel> create(
+        key: String,
+        modelClass: Class<T>,
+        handle: SavedStateHandle
+    ) = with(modelClass) {
+        when {
+            isAssignableFrom(StatisticsViewModel::class.java) ->
+                StatisticsViewModel(tasksRepository)
+            isAssignableFrom(TaskDetailViewModel::class.java) ->
+                TaskDetailViewModel(tasksRepository)
+            isAssignableFrom(AddEditTaskViewModel::class.java) ->
+                AddEditTaskViewModel(tasksRepository)
+            isAssignableFrom(TasksViewModel::class.java) ->
+                TasksViewModel(tasksRepository, handle)
+            else ->
+                throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
+        }
+    } as T
 }

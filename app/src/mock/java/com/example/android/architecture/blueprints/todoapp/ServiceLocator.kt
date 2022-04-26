@@ -45,7 +45,9 @@ object ServiceLocator {
     }
 
     private fun createTasksRepository(context: Context): TasksRepository {
-        return DefaultTasksRepository(FakeTasksRemoteDataSource, createTaskLocalDataSource(context))
+        val newRepo = DefaultTasksRepository(FakeTasksRemoteDataSource, createTaskLocalDataSource(context))
+        tasksRepository = newRepo
+        return newRepo
     }
 
     private fun createTaskLocalDataSource(context: Context): TasksDataSource {
@@ -53,11 +55,23 @@ object ServiceLocator {
         return TasksLocalDataSource(database.taskDao())
     }
 
-    private fun createDataBase(context: Context): ToDoDatabase {
-        val result = Room.databaseBuilder(
-            context.applicationContext,
-            ToDoDatabase::class.java, "Tasks.db"
-        ).build()
+    @VisibleForTesting
+    fun createDataBase(
+        context: Context,
+        inMemory: Boolean = false
+    ): ToDoDatabase {
+        val result = if (inMemory) {
+            // Use a faster in-memory database for tests
+            Room.inMemoryDatabaseBuilder(context.applicationContext, ToDoDatabase::class.java)
+                .allowMainThreadQueries()
+                .build()
+        } else {
+            // Real database using SQLite
+            Room.databaseBuilder(
+                context.applicationContext,
+                ToDoDatabase::class.java, "Tasks.db"
+            ).build()
+        }
         database = result
         return result
     }

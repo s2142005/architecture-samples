@@ -45,28 +45,34 @@ class TaskDetailFragment : Fragment() {
 
     private val viewModel by viewModels<TaskDetailViewModel> { getViewModelFactory() }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupFab()
-        view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
+        view.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
         setupNavigation()
         this.setupRefreshLayout(viewDataBinding.refreshLayout)
     }
 
     private fun setupNavigation() {
-        viewModel.deleteTaskEvent.observe(this, EventObserver {
-            val action = TaskDetailFragmentDirections
-                .actionTaskDetailFragmentToTasksFragment(DELETE_RESULT_OK)
-            findNavController().navigate(action)
-        })
-        viewModel.editTaskEvent.observe(this, EventObserver {
-            val action = TaskDetailFragmentDirections
-                .actionTaskDetailFragmentToAddEditTaskFragment(
-                    args.taskId,
-                    resources.getString(R.string.edit_task)
-                )
-            findNavController().navigate(action)
-        })
+        viewModel.deleteTaskEvent.observe(
+            this,
+            EventObserver {
+                val action = TaskDetailFragmentDirections
+                    .actionTaskDetailFragmentToTasksFragment(DELETE_RESULT_OK)
+                findNavController().navigate(action)
+            }
+        )
+        viewModel.editTaskEvent.observe(
+            this,
+            EventObserver {
+                val action = TaskDetailFragmentDirections
+                    .actionTaskDetailFragmentToAddEditTaskFragment(
+                        args.taskId,
+                        resources.getString(R.string.edit_task)
+                    )
+                findNavController().navigate(action)
+            }
+        )
     }
 
     private fun setupFab() {

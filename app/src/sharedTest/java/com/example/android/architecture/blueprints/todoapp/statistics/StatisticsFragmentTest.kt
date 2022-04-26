@@ -36,7 +36,6 @@ import com.example.android.architecture.blueprints.todoapp.util.DataBindingIdlin
 import com.example.android.architecture.blueprints.todoapp.util.monitorFragment
 import com.example.android.architecture.blueprints.todoapp.util.saveTaskBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -61,7 +60,7 @@ class StatisticsFragmentTest {
     }
 
     @After
-    fun cleanupDb() = runBlockingTest {
+    fun cleanupDb() {
         ServiceLocator.resetRepository()
     }
 
@@ -97,6 +96,7 @@ class StatisticsFragmentTest {
             .getString(R.string.statistics_active_tasks, 50.0f)
         val expectedCompletedTaskText = getApplicationContext<Context>()
             .getString(R.string.statistics_completed_tasks, 50.0f)
+
         // check that both info boxes are displayed and contain the correct info
         onView(withId(R.id.stats_active_text)).check(matches(isDisplayed()))
         onView(withId(R.id.stats_active_text)).check(matches(withText(expectedActiveTaskText)))

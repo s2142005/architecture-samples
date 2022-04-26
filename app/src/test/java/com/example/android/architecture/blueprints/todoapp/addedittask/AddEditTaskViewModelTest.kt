@@ -16,16 +16,19 @@
 package com.example.android.architecture.blueprints.todoapp.addedittask
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.android.architecture.blueprints.todoapp.LiveDataTestUtil.getValue
 import com.example.android.architecture.blueprints.todoapp.MainCoroutineRule
 import com.example.android.architecture.blueprints.todoapp.R.string
 import com.example.android.architecture.blueprints.todoapp.assertSnackbarMessage
 import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.data.source.FakeRepository
-import com.example.android.architecture.blueprints.todoapp.domain.GetTaskUseCase
-import com.example.android.architecture.blueprints.todoapp.domain.SaveTaskUseCase
+import com.example.android.architecture.blueprints.todoapp.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,11 +48,11 @@ class AddEditTaskViewModelTest {
     // Set the main coroutines dispatcher for unit testing.
     @ExperimentalCoroutinesApi
     @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
+    val mainCoroutineRule = MainCoroutineRule()
 
     // Executes each task synchronously using Architecture Components.
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private val task = Task("Title1", "Description1")
 
@@ -59,10 +62,7 @@ class AddEditTaskViewModelTest {
         tasksRepository = FakeRepository()
 
         // Create class under test
-        addEditTaskViewModel = AddEditTaskViewModel(
-            GetTaskUseCase(tasksRepository),
-            SaveTaskUseCase(tasksRepository)
-        )
+        addEditTaskViewModel = AddEditTaskViewModel(tasksRepository)
     }
 
     @Test
@@ -83,21 +83,21 @@ class AddEditTaskViewModelTest {
     }
 
     @Test
-    fun loadTasks_loading() {
-        // Pause dispatcher so we can verify initial values
-        mainCoroutineRule.pauseDispatcher()
+    fun loadTasks_loading() = runTest {
+        // Set Main dispatcher to not run coroutines eagerly, for just this one test
+        Dispatchers.setMain(StandardTestDispatcher())
 
         // Load the task in the viewmodel
         addEditTaskViewModel.start(task.id)
 
         // Then progress indicator is shown
-        assertThat(getValue(addEditTaskViewModel.dataLoading)).isTrue()
+        assertThat(addEditTaskViewModel.dataLoading.getOrAwaitValue()).isTrue()
 
         // Execute pending coroutines actions
-        mainCoroutineRule.resumeDispatcher()
+        advanceUntilIdle()
 
         // Then progress indicator is hidden
-        assertThat(getValue(addEditTaskViewModel.dataLoading)).isFalse()
+        assertThat(addEditTaskViewModel.dataLoading.getOrAwaitValue()).isFalse()
     }
 
     @Test
@@ -109,9 +109,9 @@ class AddEditTaskViewModelTest {
         addEditTaskViewModel.start(task.id)
 
         // Verify a task is loaded
-        assertThat(getValue(addEditTaskViewModel.title)).isEqualTo(task.title)
-        assertThat(getValue(addEditTaskViewModel.description)).isEqualTo(task.description)
-        assertThat(getValue(addEditTaskViewModel.dataLoading)).isFalse()
+        assertThat(addEditTaskViewModel.title.getOrAwaitValue()).isEqualTo(task.title)
+        assertThat(addEditTaskViewModel.description.getOrAwaitValue()).isEqualTo(task.description)
+        assertThat(addEditTaskViewModel.dataLoading.getOrAwaitValue()).isFalse()
     }
 
     @Test

@@ -1,44 +1,69 @@
-# Android Architecture Blueprints - Use Cases/Interactors in Domain layer
-### Summary
-This sample is written in Kotlin and based on the
-[master](https://github.com/googlesamples/android-architecture/tree/master) branch which uses
-the following Architecture Components:
- - ViewModel
- - LiveData
- - Data Binding
- - Navigation
- - Room
+# Android Architecture Blueprints v2
+<p align="center">
+<img src="https://github.com/googlesamples/android-architecture/wiki/images/aab-logov2.png" alt="Illustration by Virginia Poltrack"/>
+</p>
 
-It introduces a new layer called `domain` where the Use Cases (also called Interactors) live. The 
-`domain` layer is where the business logic happens, which is the code that determines what
-the app _does_ with the data coming from the repository before it's exposed to the UI for
-display.
+Android Architecture Blueprints is a project to showcase different architectural approaches to developing Android apps. In its different branches you'll find the same app (a TODO app) implemented with small differences.
 
-The todo app is too simple to showcase a complete representation of 
-[Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html), 
-but it adheres to some of its rules, which work well in a modern Android application: separation
-of concerns, high level of abstraction and the dependency rule, which in our case means that layers 
-only know about what's directly underneath them:
- - Presentation layer knows about use cases (domain layer).
- - Domain layer knows about repository (data layer) but not the Presentation layer.
- - Data layer doesn't know about domain or presentation layers.
+In this branch you'll find:
+*   Kotlin **[Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html)** for background operations.
+*   A single-activity architecture, using the **[Navigation component](https://developer.android.com/guide/navigation/navigation-getting-started)** to manage fragment operations.
+*   A presentation layer that contains a fragment (View) and a **ViewModel** per screen (or feature).
+*   Reactive UIs using **LiveData** observables and **Data Binding**.
+*   A **data layer** with a repository and two data sources (local using Room and remote) that are queried with one-shot operations (no listeners or data streams).
+*   Two **product flavors**, `mock` and `prod`, [to ease development and testing](https://android-developers.googleblog.com/2015/12/leveraging-product-flavors-in-android.html) (except in the Dagger branch).
+*   A collection of unit, integration and e2e **tests**, including "shared" tests that can be run on emulator/device or Robolectric.
 
-This allows for easier testing and maintenance and recommended for bigger projects (alongside 
-modularization).
+## Variations
 
-### Differences with master
+This project hosts each sample app in separate repository branches. For more information, see the `README.md` file in each branch.
 
- - ViewModels don't receive a repository but a set of Use Cases, which are reused throughout the
- presentation layer.
- - Business logic that was present in ViewModels is moved to Use Cases. This is important because
- ViewModels tend to grow quickly in size in real applications. 
+### Stable samples - Kotlin
+|     Sample     | Description |
+| ------------- | ------------- |
+| [master](https://github.com/googlesamples/android-architecture/tree/master) | The base for the rest of the branches. <br/>Uses Kotlin, Architecture Components, coroutines, Data Binding, etc. and uses Room as source of truth, with a reactive UI. |
+| [dagger-android](https://github.com/googlesamples/android-architecture/tree/dagger-android)<br/>[[compare](https://github.com/googlesamples/android-architecture/compare/dagger-android#files_bucket)] | A simple Dagger setup that uses `dagger-android` and removes the two flavors. |
+| [usecases](https://github.com/googlesamples/android-architecture/tree/usecases)<br/>[[compare](https://github.com/googlesamples/android-architecture/compare/usecases#files_bucket)] | Adds a new domain layer that uses UseCases for business logic. |
 
+### Old samples - Kotlin and Java
 
-### Key files
+Blueprints v1 had a collection of samples that are not maintained anymore, but can still be useful. See [all project branches](https://github.com/googlesamples/android-architecture/branches).
 
-The only relevant use case in this example is `GetTasksUseCase`. It contains some business logic
-that used to be in the ViewModel. It's decoupled from the view so it can be thoroughly unit tested
-in `GetTasksUseCaseTest`.
+## Why a to-do app?
+
+<img align="right" src="https://github.com/googlesamples/android-architecture/wiki/images/todoapp.gif" alt="A demo illustraating the UI of the app" width="288" height="512" style="display: inline; float: right"/>
+
+The app in this project aims to be simple enough that you can understand it quickly, but complex enough to showcase difficult design decisions and testing scenarios. For more information, see the [app's specification](https://github.com/googlesamples/android-architecture/wiki/To-do-app-specification).
+
+## What is it not?
+
+*   A UI/Material Design sample. The interface of the app is deliberately kept simple to focus on architecture. Check out [Plaid](https://github.com/android/plaid) instead.
+*   A complete Jetpack sample covering all libraries. Check out [Android Sunflower](https://github.com/googlesamples/android-sunflower) or the advanced [Github Browser Sample](https://github.com/googlesamples/android-architecture-components/tree/master/GithubBrowserSample) instead.
+*   A real production app with network access, user authentication, etc. Check out the [Google I/O app](https://github.com/google/iosched), [Santa Tracker](https://github.com/google/santa-tracker-android) or [Tivi](https://github.com/chrisbanes/tivi) for that.
+
+## Who is it for?
+
+*   Intermediate developers and beginners looking for a way to structure their app in a testable and maintainable way.
+*   Advanced developers looking for quick reference.
+
+## Opening a sample in Android Studio
+
+To open one of the samples in Android Studio, begin by checking out one of the sample branches, and then open the root directory in Android Studio. The following series of steps illustrate how to open the [usecases](tree/usecases/) sample.
+
+Clone the repository:
+
+```
+git clone git@github.com:googlesamples/android-architecture.git
+```
+This step checks out the master branch. If you want to change to a different sample: 
+
+```
+git checkout usecases
+```
+
+**Note:** To review a different sample, replace `usecases` with the name of sample you want to check out.
+
+Finally open the `android-architecture/` directory in Android Studio.
 
 ### License
 
