@@ -315,7 +315,7 @@ class TasksFragmentTest {
         val navController = TestNavHostController(ApplicationProvider.getApplicationContext())
         scenario.onFragment {
             navController.setGraph(R.navigation.nav_graph)
-            navController.setCurrentDestination(R.id.tasks_fragment_dest)
+            navController.setCurrentDestination(R.id.tasksFragment)
             Navigation.setViewNavController(it.requireView(), navController)
         }
 
@@ -323,7 +323,7 @@ class TasksFragmentTest {
         onView(withId(R.id.fab_add_task)).perform(click())
 
         // THEN - Verify that we navigate to the add screen
-        assertEquals(navController.currentDestination?.id, id.add_edit_task_fragment_dest)
+        assertEquals(navController.currentDestination?.id, id.addEditTaskFragment)
     }
 
     private fun launchActivity(): ActivityScenario<TasksActivity>? {

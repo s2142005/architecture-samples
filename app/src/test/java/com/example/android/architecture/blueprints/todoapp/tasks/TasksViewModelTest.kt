@@ -152,7 +152,7 @@ class TasksViewModelTest {
             assertThat(tasksViewModel.items.getOrAwaitValue()).isEmpty()
 
             // And the snackbar updated
-            assertSnackbarMessage(tasksViewModel.snackbarText, R.string.loading_tasks_error)
+            assertSnackbarMessage(tasksViewModel.snackbarMessage, R.string.loading_tasks_error)
         }
     }
 
@@ -196,7 +196,7 @@ class TasksViewModelTest {
 
         // Verify snackbar is updated
         assertSnackbarMessage(
-            tasksViewModel.snackbarText, R.string.completed_tasks_cleared
+            tasksViewModel.snackbarMessage, R.string.completed_tasks_cleared
         )
     }
 
@@ -207,7 +207,7 @@ class TasksViewModelTest {
 
         // The snackbar is updated
         assertSnackbarMessage(
-            tasksViewModel.snackbarText, R.string.successfully_saved_task_message
+            tasksViewModel.snackbarMessage, R.string.successfully_saved_task_message
         )
     }
 
@@ -218,7 +218,7 @@ class TasksViewModelTest {
 
         // The snackbar is updated
         assertSnackbarMessage(
-            tasksViewModel.snackbarText, R.string.successfully_added_task_message
+            tasksViewModel.snackbarMessage, R.string.successfully_added_task_message
         )
     }
 
@@ -229,7 +229,7 @@ class TasksViewModelTest {
 
         // The snackbar is updated
         assertSnackbarMessage(
-            tasksViewModel.snackbarText,
+            tasksViewModel.snackbarMessage,
             R.string.successfully_deleted_task_message
         )
     }
@@ -248,7 +248,7 @@ class TasksViewModelTest {
 
         // The snackbar is updated
         assertSnackbarMessage(
-            tasksViewModel.snackbarText, R.string.task_marked_complete
+            tasksViewModel.snackbarMessage, R.string.task_marked_complete
         )
     }
 
@@ -266,7 +266,7 @@ class TasksViewModelTest {
 
         // The snackbar is updated
         assertSnackbarMessage(
-            tasksViewModel.snackbarText, R.string.task_marked_active
+            tasksViewModel.snackbarMessage, R.string.task_marked_active
         )
     }
 

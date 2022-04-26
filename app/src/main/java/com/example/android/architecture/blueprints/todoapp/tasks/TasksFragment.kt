@@ -32,7 +32,7 @@ import com.example.android.architecture.blueprints.todoapp.EventObserver
 import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.databinding.TasksFragBinding
-import com.example.android.architecture.blueprints.todoapp.util.getViewModelFactory
+import com.example.android.architecture.blueprints.todoapp.util.getVmFactory
 import com.example.android.architecture.blueprints.todoapp.util.setupRefreshLayout
 import com.example.android.architecture.blueprints.todoapp.util.setupSnackbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -44,7 +44,7 @@ import timber.log.Timber
  */
 class TasksFragment : Fragment() {
 
-    private val viewModel by viewModels<TasksViewModel> { getViewModelFactory() }
+    private val viewModel by viewModels<TasksViewModel> { getVmFactory() }
 
     private val args: TasksFragmentArgs by navArgs()
 
@@ -113,7 +113,7 @@ class TasksFragment : Fragment() {
     }
 
     private fun setupSnackbar() {
-        view?.setupSnackbar(viewLifecycleOwner, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
+        view?.setupSnackbar(viewLifecycleOwner, viewModel.snackbarMessage, Snackbar.LENGTH_SHORT)
         arguments?.let {
             viewModel.showEditResultMessage(args.userMessage)
         }
@@ -140,7 +140,7 @@ class TasksFragment : Fragment() {
 
     // TODO: Move this to databinding
     private fun setupFab() {
-        requireView().findViewById<FloatingActionButton>(R.id.add_task_fab)?.let {
+        requireView().findViewById<FloatingActionButton>(R.id.fab_add_task)?.let {
             it.setOnClickListener {
                 navigateToAddNewTask()
             }

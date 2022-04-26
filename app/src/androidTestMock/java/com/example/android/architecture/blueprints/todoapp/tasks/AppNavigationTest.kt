@@ -105,10 +105,10 @@ class AppNavigationTest {
 
         // Start statistics screen.
         onView(withId(R.id.nav_view))
-            .perform(navigateTo(R.id.statistics_fragment_dest))
+            .perform(navigateTo(R.id.statisticsFragment))
 
         // Check that statistics screen was opened.
-        onView(withId(R.id.statistics_layout)).check(matches(isDisplayed()))
+        onView(withId(R.id.statistics)).check(matches(isDisplayed()))
 
         onView(withId(R.id.drawer_layout))
             .check(matches(isClosed(Gravity.START))) // Left Drawer should be closed.
@@ -116,10 +116,11 @@ class AppNavigationTest {
 
         // Start tasks screen.
         onView(withId(R.id.nav_view))
-            .perform(navigateTo(R.id.tasks_fragment_dest))
+            .perform(navigateTo(R.id.tasksFragment))
+            // .perform(navigateTo(R.id.tasks_fragment_dest))
 
         // Check that tasks screen was opened.
-        onView(withId(R.id.tasks_container_layout)).check(matches(isDisplayed()))
+        onView(withId(R.id.tasksContainer)).check(matches(isDisplayed()))
         // When using ActivityScenario.launch, always call close()
         activityScenario.close()
     }
@@ -157,7 +158,7 @@ class AppNavigationTest {
 
         // When the user navigates to the stats screen
         activityScenario.onActivity {
-            it.findNavController(R.id.nav_host_fragment).navigate(R.id.statistics_fragment_dest)
+            it.findNavController(R.id.nav_host_fragment).navigate(R.id.action_tasksFragment_to_statisticsFragment)
         }
 
         // Then check that left drawer is closed at startup
@@ -209,7 +210,7 @@ class AppNavigationTest {
                     .getToolbarNavigationContentDescription()
             )
         ).perform(click())
-        onView(withId(R.id.tasks_container_layout)).check(matches(isDisplayed()))
+        onView(withId(R.id.tasksContainer)).check(matches(isDisplayed()))
         // When using ActivityScenario.launch, always call close()
         activityScenario.close()
     }
@@ -234,7 +235,7 @@ class AppNavigationTest {
 
         // Confirm that if we click back a second time, we end up back at the home screen
         pressBack()
-        onView(withId(R.id.tasks_container_layout)).check(matches(isDisplayed()))
+        onView(withId(R.id.tasksContainer)).check(matches(isDisplayed()))
         // When using ActivityScenario.launch, always call close()
         activityScenario.close()
     }

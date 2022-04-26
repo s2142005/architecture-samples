@@ -76,27 +76,31 @@ class AddEditTaskFragmentTest {
         launchFragmentInContainer<AddEditTaskFragment>(bundle, R.style.AppTheme)
 
         // WHEN - Enter invalid title and description combination and click save
-        onView(withId(R.id.add_task_title)).perform(clearText())
-        onView(withId(R.id.add_task_description)).perform(clearText())
-        onView(withId(R.id.fab_save_task)).perform(click())
+        onView(withId(R.id.add_task_title_edit_text))
+            .perform(clearText())
+
+        onView(withId(R.id.add_task_description_edit_text))
+            .perform(clearText())
+
+        onView(withId(R.id.save_task_fab)).perform(click())
 
         // THEN - Entered Task is still displayed (a correct task would close it).
-        onView(withId(R.id.add_task_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.add_task_title_edit_text)).check(matches(isDisplayed()))
     }
 
     @Test
     fun validTask_navigatesBack() {
         // GIVEN - On the "Add Task" screen.
         val navController = TestNavHostController(getApplicationContext())
-        launchFragment(navController)
+        launchFragment(navController, R.id.addEditTaskFragment)
 
         // WHEN - Valid title and description combination and click save
-        onView(withId(R.id.add_task_title)).perform(replaceText("title"))
-        onView(withId(R.id.add_task_description)).perform(replaceText("description"))
-        onView(withId(R.id.fab_save_task)).perform(click())
+        onView(withId(R.id.add_task_title_edit_text)).perform(replaceText("title"))
+        onView(withId(R.id.add_task_description_edit_text)).perform(replaceText("description"))
+        onView(withId(R.id.save_task_fab)).perform(click())
 
         // THEN - Verify that we navigated back to the tasks screen.
-        assertEquals(navController.currentDestination?.id, R.id.tasks_fragment_dest)
+        assertEquals(navController.currentDestination?.id, R.id.tasksFragment)
     }
 
     @Test
@@ -106,9 +110,9 @@ class AddEditTaskFragmentTest {
         launchFragment(navController)
 
         // WHEN - Valid title and description combination and click save
-        onView(withId(R.id.add_task_title)).perform(replaceText("title"))
-        onView(withId(R.id.add_task_description)).perform(replaceText("description"))
-        onView(withId(R.id.fab_save_task)).perform(click())
+        onView(withId(R.id.add_task_title_edit_text)).perform(replaceText("title"))
+        onView(withId(R.id.add_task_description_edit_text)).perform(replaceText("description"))
+        onView(withId(R.id.save_task_fab)).perform(click())
 
         // THEN - Verify that the repository saved the task
         val tasks = (repository.getTasksBlocking(true) as Result.Success).data
@@ -117,7 +121,7 @@ class AddEditTaskFragmentTest {
         assertEquals(tasks[0].description, "description")
     }
 
-    private fun launchFragment(navController: TestNavHostController) {
+    private fun launchFragment(navController: TestNavHostController, destinationId: Int = R.id.addEditTaskFragment) {
         val bundle = AddEditTaskFragmentArgs(
             null,
             getApplicationContext<Context>().getString(R.string.add_task)
@@ -125,7 +129,7 @@ class AddEditTaskFragmentTest {
         val scenario = launchFragmentInContainer<AddEditTaskFragment>(bundle, R.style.AppTheme)
         scenario.onFragment {
             navController.setGraph(R.navigation.nav_graph)
-            navController.setCurrentDestination(R.id.add_edit_task_fragment_dest)
+            navController.setCurrentDestination(destinationId)
             Navigation.setViewNavController(it.requireView(), navController)
         }
     }

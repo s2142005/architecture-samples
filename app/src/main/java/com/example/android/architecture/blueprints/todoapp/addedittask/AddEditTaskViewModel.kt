@@ -24,6 +24,7 @@ import com.example.android.architecture.blueprints.todoapp.Event
 import com.example.android.architecture.blueprints.todoapp.R
 import com.example.android.architecture.blueprints.todoapp.data.Result.Success
 import com.example.android.architecture.blueprints.todoapp.data.Task
+import com.example.android.architecture.blueprints.todoapp.data.source.TasksRepository
 import com.example.android.architecture.blueprints.todoapp.domain.GetTaskUseCase
 import com.example.android.architecture.blueprints.todoapp.domain.SaveTaskUseCase
 import kotlinx.coroutines.launch
@@ -35,6 +36,10 @@ class AddEditTaskViewModel(
     private val getTaskUseCase: GetTaskUseCase,
     private val saveUseCase: SaveTaskUseCase
 ) : ViewModel() {
+    constructor(tasksRepository: TasksRepository) : this(
+        GetTaskUseCase(tasksRepository),
+        SaveTaskUseCase(tasksRepository)
+    )
 
     // Two-way databinding, exposing MutableLiveData
     val title = MutableLiveData<String>()
