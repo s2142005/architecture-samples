@@ -76,7 +76,7 @@ class TasksViewModel(
     val tasksAddViewVisible: LiveData<Boolean> = _tasksAddViewVisible
 
     private val _snackbarText = MutableLiveData<Event<Int>>()
-    val snackbarText: LiveData<Event<Int>> = _snackbarText
+    val snackbarMessage: LiveData<Event<Int>> = _snackbarText
 
     // Not used at the moment
     private val isDataLoadingError = MutableLiveData<Boolean>()

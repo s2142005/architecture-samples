@@ -21,6 +21,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.example.android.architecture.blueprints.todoapp.MainCoroutineRule
+import com.example.android.architecture.blueprints.todoapp.data.Result
 import com.example.android.architecture.blueprints.todoapp.data.Result.Success
 import com.example.android.architecture.blueprints.todoapp.data.Task
 import com.example.android.architecture.blueprints.todoapp.data.source.TasksDataSource
@@ -103,7 +104,7 @@ class TasksLocalDataSourceTest {
 
         // Then the task can be retrieved from the persistent repository and is complete
         assertThat(result.succeeded, `is`(true))
-        result as Success
+        result as Result.Success
         assertThat(result.data.title, `is`(newTask.title))
         assertThat(result.data.isCompleted, `is`(true))
     }
@@ -120,7 +121,7 @@ class TasksLocalDataSourceTest {
         val result = localDataSource.getTask(newTask.id)
 
         assertThat(result.succeeded, `is`(true))
-        result as Success
+        result as Result.Success
 
         assertThat(result.data.title, `is`("Some title"))
         assertThat(result.data.isCompleted, `is`(false))
@@ -147,7 +148,7 @@ class TasksLocalDataSourceTest {
         val result3 = localDataSource.getTask(newTask3.id)
 
         assertThat(result3.succeeded, `is`(true))
-        result3 as Success
+        result3 as Result.Success
 
         assertThat(result3.data, `is`(newTask3))
     }
@@ -163,7 +164,7 @@ class TasksLocalDataSourceTest {
         localDataSource.deleteAllTasks()
 
         // Then the retrieved tasks is an empty list
-        val result = localDataSource.getTasks() as Success
+        val result = localDataSource.getTasks() as Result.Success
         assertThat(result.data.isEmpty(), `is`(true))
     }
 
@@ -176,7 +177,7 @@ class TasksLocalDataSourceTest {
         localDataSource.saveTask(newTask1)
         localDataSource.saveTask(newTask2)
         // Then the tasks can be retrieved from the persistent repository
-        val results = localDataSource.getTasks() as Success<List<Task>>
+        val results = localDataSource.getTasks() as Result.Success<List<Task>>
         val tasks = results.data
         assertThat(tasks.size, `is`(2))
     }
